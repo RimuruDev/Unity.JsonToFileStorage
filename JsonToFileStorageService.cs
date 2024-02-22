@@ -19,7 +19,17 @@ namespace RimuruDev
 {
     public sealed class JsonToFileStorageService : IStorageService
     {
-        public string GetDataPath { get; } = Application.persistentDataPath + "/Database";
+        private readonly string FileFormat = ".json";
+        public string GetDataPath { get; }
+
+        public JsonToFileStorageService() =>
+            GetDataPath = Application.persistentDataPath + "/Database";
+
+        public JsonToFileStorageService(string fileFormat)
+        {
+            FileFormat = fileFormat;
+            GetDataPath = Application.persistentDataPath + "/Database";
+        }
 
         public void Save(string key, object data, Action<bool> onCallback = null)
         {
@@ -56,6 +66,6 @@ namespace RimuruDev
             await Task.Run(() => Load(key, onCallback));
 
         private string BuildPath(string key) =>
-            Path.Combine(GetDataPath, key);
+            Path.Combine(GetDataPath, $"{key}{FileFormat}");
     }
 }
